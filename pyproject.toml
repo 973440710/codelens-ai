@@ -1,0 +1,52 @@
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "codelens-ai"
+version = "1.0.0"
+authors = [
+    { name = "CodeLens AI Team", email = "team@codelens.ai" },
+]
+description = "AI驱动的代码优化工具"
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+keywords = ["ai", "code-quality", "productivity", "optimization"]
+dependencies = [
+    "openai>=1.0.0",
+    "google-generativeai>=0.7.0",
+    "click>=8.0.0",
+    "rich>=13.0.0",
+    "astor>=0.8.0",
+    "colorama>=0.4.0",
+    "PyYAML>=6.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "flake8>=6.0.0",
+]
+
+[project.scripts]
+codelens = "cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v"
+
+[tool.flake8]
+max-line-length = 127
+max-complexity = 10
+select = "E9,F63,F7,F82"
+ignore = "W503"

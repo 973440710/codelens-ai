@@ -1,0 +1,58 @@
+
+# 环境变量文件
+.env
+.env.*
+!.env.example
+
+# Python 虚拟环境
+venv/
+.env/
+*.venv
+.venv/
+ENV/
+
+# 临时文件
+*.pyc
+*.pyo
+*~
+__pycache__/
+*.swp
+
+# IDE 和编辑器配置
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+
+# 测试和覆盖率报告
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+.pytest_cache/
+
+# 构建输出
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+
+# 日志文件
+*.log
+logs/
+
+# 报告文件
+reports/
+*.html
+*.pdf
+
+# 临时目录
+tmp/
+temp/
+
+# 其他
+.DS_Store
+Thumbs.db

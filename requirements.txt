@@ -1,0 +1,12 @@
+
+# CodeLens AI - AI驱动的代码优化工具
+# 核心依赖
+openai==1.35.10
+google-generativeai==0.7.0
+click==8.1.7
+rich==13.7.1
+astor==0.8.1
+colorama==0.4.6
+PyYAML==6.0.1
+pytest==7.4.0
+pytest-cov==4.1.0
