@@ -1,8 +1,8 @@
 
 # CodeLens AI - AI驱动的代码优化工具 🚀
 
-[![GitHub stars](https://img.shields.io/github/stars/yourusername/codelens-ai.svg?style=social&label=Stars)](https://github.com/yourusername/codelens-ai)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/yourusername/codelens-ai/blob/main/LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/973440710/codelens-ai.svg?style=social&label=Stars)](https://github.com/973440710/codelens-ai)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/973440710/codelens-ai/blob/main/LICENSE)
 [![PyPI version](https://img.shields.io/pypi/v/codelens-ai.svg)](https://pypi.org/project/codelens-ai/)
 [![Python version](https://img.shields.io/pypi/pyversions/codelens-ai.svg)](https://pypi.org/project/codelens-ai/)
 
@@ -35,7 +35,7 @@ pip install codelens-ai
 
 ### 从源码安装
 ```bash
-git clone https://github.com/yourusername/codelens-ai.git
+git clone https://github.com/973440710/codelens-ai.git
 cd codelens-ai
 pip install -r requirements.txt
 pip install -e .
@@ -137,15 +137,15 @@ def calculate_total(items):
 ## 📞 支持
 
 如果您有任何问题或建议，请：
-1. 查看我们的 [文档](https://github.com/yourusername/codelens-ai/wiki)
-2. 查看 [问题列表](https://github.com/yourusername/codelens-ai/issues)
-3. 提交新的 [问题](https://github.com/yourusername/codelens-ai/issues/new)
+1. 查看我们的 [文档](https://github.com/973440710/codelens-ai/wiki)
+2. 查看 [问题列表](https://github.com/973440710/codelens-ai/issues)
+3. 提交新的 [问题](https://github.com/973440710/codelens-ai/issues/new)
 
 ## 🌟 社区
 
 加入我们的社区，与其他开发者一起学习和成长！
 
-- **GitHub Issues**: https://github.com/yourusername/codelens-ai/issues
+- **GitHub Issues**: https://github.com/973440710/codelens-ai/issues
 - **Discord**: https://discord.gg/codelens-ai
 - **Twitter**: https://twitter.com/codelens_ai
 
