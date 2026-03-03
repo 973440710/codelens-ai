@@ -83,14 +83,15 @@ class Config:
         else:
             raise ValueError("温度值必须在 0 到 2 之间")
     
-    def validate_config(self):
+    def validate_config(self, require_api_key: bool = True):
         """验证配置是否完整"""
-        if self.model == "openai" and not self.openai_api_key:
-            raise ValueError("OpenAI API 密钥未配置，请运行 'codelens config' 命令")
-        if self.model == "gemini" and not self.gemini_api_key:
-            raise ValueError("Google Gemini API 密钥未配置，请运行 'codelens config' 命令")
+        if require_api_key:
+            if self.model == "openai" and not self.openai_api_key:
+                raise ValueError("OpenAI API 密钥未配置，请运行 'codelens config' 命令")
+            if self.model == "gemini" and not self.gemini_api_key:
+                raise ValueError("Google Gemini API 密钥未配置，请运行 'codelens config' 命令")
     
-    def get_api_key(self):
+    def get_api_key(self, require_api_key: bool = True):
         """获取当前模型的 API 密钥"""
-        self.validate_config()
+        self.validate_config(require_api_key)
         return self.openai_api_key if self.model == "openai" else self.gemini_api_key

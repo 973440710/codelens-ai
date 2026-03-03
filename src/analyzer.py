@@ -50,21 +50,21 @@ class CodeAnalyzer:
                     
         return code_files
     
-    def _is_code_file(self, file_path: str, target_language: str = None) -> bool:
+    def _is_code_file(self, file_path: str, language: str = None) -> bool:
         """
         判断文件是否是代码文件
         
         Args:
             file_path: 文件路径
-            target_language: 目标语言（可选）
+            language: 目标语言（可选）
             
         Returns:
             是否是代码文件
         """
         file_ext = os.path.splitext(file_path)[1].lower()
         
-        if target_language:
-            target_ext = '.' + target_language.lower()
+        if language:
+            target_ext = '.' + language.lower()
             return file_ext == target_ext
             
         return file_ext in self.language_map
@@ -97,12 +97,15 @@ class CodeAnalyzer:
             
         return analysis
     
-    def _analyze_python(self, analysis: Dict[str, Any]) -> None:
+    def _analyze_python(self, analysis: Dict[str, Any]) -> Dict[str, Any]:
         """
         分析 Python 代码
         
         Args:
             analysis: 分析结果字典
+            
+        Returns:
+            更新后的分析结果
         """
         try:
             tree = ast.parse(analysis['code'])
@@ -127,6 +130,8 @@ class CodeAnalyzer:
                 'line': 0,
                 'column': 0
             })
+            
+        return analysis
     
     def _check_python_code_quality(self, tree: ast.AST) -> List[Dict[str, Any]]:
         """
@@ -141,6 +146,16 @@ class CodeAnalyzer:
         issues = []
         
         for node in ast.walk(tree):
+            # 检查 print 语句（Python 3.x 中 print 是函数）
+            if isinstance(node, ast.Expr) and isinstance(node.value, ast.Call) and \
+               hasattr(node.value.func, 'id') and node.value.func.id == 'print':
+                issues.append({
+                    'type': 'style',
+                    'description': "使用 print 语句进行调试",
+                    'line': node.lineno,
+                    'column': node.col_offset
+                })
+            
             # 检查重复代码模式
             if isinstance(node, ast.For):
                 if isinstance(node.iter, ast.Call) and hasattr(node.iter.func, 'id') and node.iter.func.id == 'range':
@@ -188,36 +203,64 @@ class CodeAnalyzer:
             # 如果有多个逻辑运算符，认为是复杂条件
             if len(node.values) > 2:
                 return True
+        
+        # 检查嵌套条件
+        if isinstance(node, ast.IfExp) or isinstance(node, ast.BoolOp) or \
+           (isinstance(node, ast.UnaryOp) and isinstance(node.op, ast.Not)):
+            return True
+            
+        # 检查包含多个操作符的条件
+        if hasattr(node, 'left') and hasattr(node, 'ops'):
+            if len(node.ops) > 1:
+                return True
                 
-        # 可以添加更多复杂条件判断逻辑
         return False
     
-    def _analyze_javascript(self, analysis: Dict[str, Any]) -> None:
+    def _analyze_javascript(self, analysis: Dict[str, Any]) -> Dict[str, Any]:
         """
         分析 JavaScript/TypeScript 代码
         
         Args:
             analysis: 分析结果字典
+            
+        Returns:
+            更新后的分析结果
         """
         # 简单的 JavaScript/TypeScript 代码分析实现
         # 实际项目中可以使用 Babel 解析器
         try:
-            # 基础的语法检查
-            if 'eval(' in analysis['code']:
-                analysis['issues'].append({
-                    'type': 'security',
-                    'description': "使用 eval() 存在安全风险",
-                    'line': 0,
-                    'column': 0
-                })
+            # 逐行扫描代码以检测问题并获取行号
+            lines = analysis['code'].split('\n')
+            
+            for line_number, line in enumerate(lines, 1):
+                line = line.strip()
                 
-            if 'alert(' in analysis['code']:
-                analysis['issues'].append({
-                    'type': 'style',
-                    'description': "使用 alert() 进行调试，可以考虑使用 console.log()",
-                    'line': 0,
-                    'column': 0
-                })
+                # 检查 eval() 函数
+                if 'eval(' in line:
+                    analysis['issues'].append({
+                        'type': 'security',
+                        'description': "使用 eval() 存在安全风险",
+                        'line': line_number,
+                        'column': line.find('eval(')
+                    })
+                
+                # 检查 alert() 函数
+                if 'alert(' in line:
+                    analysis['issues'].append({
+                        'type': 'style',
+                        'description': "使用 alert() 进行调试，可以考虑使用 console.log()",
+                        'line': line_number,
+                        'column': line.find('alert(')
+                    })
+                
+                # 检查 console.log 函数
+                if 'console.log(' in line:
+                    analysis['issues'].append({
+                        'type': 'style',
+                        'description': "使用 console.log 进行调试",
+                        'line': line_number,
+                        'column': line.find('console.log(')
+                    })
                 
         except Exception as e:
             analysis['issues'].append({
@@ -226,3 +269,5 @@ class CodeAnalyzer:
                 'line': 0,
                 'column': 0
             })
+            
+        return analysis
