@@ -146,8 +146,6 @@ def calculate_total(items):
 加入我们的社区，与其他开发者一起学习和成长！
 
 - **GitHub Issues**: https://github.com/973440710/codelens-ai/issues
-- **Discord**: https://discord.gg/codelens-ai
-- **Twitter**: https://twitter.com/codelens_ai
 
 ---
 
