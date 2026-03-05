@@ -50,22 +50,26 @@ class CodeAnalyzer:
                     
         return code_files
     
-    def _is_code_file(self, file_path: str, language: str = None) -> bool:
+    def _is_code_file(self, file_path: str, target_language: str = None) -> bool:
         """
         判断文件是否是代码文件
         
         Args:
             file_path: 文件路径
-            language: 目标语言（可选）
+            target_language: 目标语言（可选）
             
         Returns:
             是否是代码文件
         """
         file_ext = os.path.splitext(file_path)[1].lower()
         
-        if language:
-            target_ext = '.' + language.lower()
-            return file_ext == target_ext
+        if target_language:
+            target_lang = target_language.lower()
+            # 检查目标语言对应的扩展名
+            for ext, lang in self.language_map.items():
+                if lang == target_lang and file_ext == ext:
+                    return True
+            return False
             
         return file_ext in self.language_map
     
@@ -199,21 +203,30 @@ class CodeAnalyzer:
         Returns:
             是否复杂
         """
+        # 检查嵌套条件
+        if isinstance(node, ast.If) or isinstance(node, ast.IfExp):
+            return True
+        
+        # 如果有多个逻辑运算符，认为是复杂条件
         if isinstance(node, ast.BoolOp):
-            # 如果有多个逻辑运算符，认为是复杂条件
-            if len(node.values) > 2:
-                return True
+            return True
         
         # 检查嵌套条件
-        if isinstance(node, ast.IfExp) or isinstance(node, ast.BoolOp) or \
-           (isinstance(node, ast.UnaryOp) and isinstance(node.op, ast.Not)):
+        if (isinstance(node, ast.UnaryOp) and isinstance(node.op, ast.Not)) or isinstance(node, ast.IfExp):
             return True
             
         # 检查包含多个操作符的条件
-        if hasattr(node, 'left') and hasattr(node, 'ops'):
-            if len(node.ops) > 1:
-                return True
-                
+        if hasattr(node, 'left') and hasattr(node, 'ops') and len(node.ops) > 1:
+            return True
+            
+        # 检查嵌套在其他条件中的条件
+        if hasattr(node, 'test') and isinstance(node.test, ast.AST):
+            return self._is_complex_condition(node.test)
+            
+        # 检查包含多个条件判断的表达式
+        if len(list(ast.walk(node))) > 5:
+            return True
+            
         return False
     
     def _analyze_javascript(self, analysis: Dict[str, Any]) -> Dict[str, Any]:
